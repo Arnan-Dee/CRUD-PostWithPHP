@@ -12,20 +12,29 @@
 		$name = $_POST['name'];
 		$address = $_POST['address'];
 
-		mysqli_query($db, "INSERT INTO info (name, address) VALUES ('$name', '$address')"); 
+		mysqli_query($db, "INSERT INTO info (id,name, address) VALUES (NULL,'$name', '$address')"); 
 		$_SESSION['message'] = "Address saved"; 
 		header('location: index.php');
 	}
 
 // ...
 	if (isset($_POST['update'])) {
-		$id = $_POST['id'];
+		if (!isset($_GET['edit'])){
+			echo "edit is not set";
+		}
+
 		$name = $_POST['name'];
 		$address = $_POST['address'];
+		print_r(array($id,$name,$address));
 
-		mysqli_query($db, "UPDATE info SET name='$name', address='$address' WHERE id=$id");
-		$_SESSION['message'] = "Address updated!"; 
-		header('location: index.php');
+		// Perform a query, check for error
+		if (!$db -> query("UPDATE info SET name='$name', address='$address' WHERE id='$id'; ")) {
+			echo("Error description: " . $db -> error);
+		}else{
+			echo "true";
+		}
+		// $_SESSION['message'] = "Address updated!"; 
+		// header('location: index.php');
 	}
 	
 	if (isset($_GET['del'])) {
